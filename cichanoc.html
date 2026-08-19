@@ -1,0 +1,407 @@
+
+<!DOCTYPE HTML>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Elektronika, komputery, telekomunikacja." />
+    <meta name="keywords" content="debian, centos, openbsd, raspberry, pi, microchip, atmel" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Strona Jacka Porembińskiego</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- header -->
+<header>
+    <img src="header.png" alt="Niezapominajki"/>
+</header>
+
+
+
+<!-- sidebar -->
+
+<aside>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="traffic.html">Światła uliczne na PIC16F84</a></li>
+            <li><a href="matrix.html">Geek clock na PIC16F628</a></li>
+            <li><a href="cichanoc.html#">Cicha Noc  (Turbo Assembler + DOS)</a></li>
+        </ul>
+    </nav>
+</aside>
+
+
+<!-- main -->
+
+<section id="main">
+
+<h1>Kartka świąteczna z pozytywką ;-)</h1>
+<br />
+<p>Pewnie każdy pamięta (to taki żarcik), gdy pod koniec lat osiemdziesiątych coraz częściej zaczęły atakować nas wirusy komputerowe. Jednym z nich był wirus <a href="http://virus.wikidot.com/vienna" target="_blank">Vienna</a>.</p>
+<p>Zainspirowany grafiką ASCII pochodzącą z tego wirusa postanowiłem napisać program, który mógłby zostać wysłany do wszystkich użytkowników amatorskiej sieci Packet Radio jako życzenia świąteczne. To miała być taka kartka świąteczna z pozytywką. </p>
+<p>Na melodię dla pozytywki wybrałem znaną powszechnie kolędę "Cicha noc". Wcześniej policzyłem częstotliwości dźwięków i wartości wpisywane do rejestru układu <b>8253</b>, który m. in. sterował głośniczkiem w komputerach IBM PC XT/AT. 
+</p>
+<br />
+<br />
+<br />
+A oto treść programu w języku Turbo Assemblera:
+<br />
+<br />
+<hr />
+<pre>
+<code>
+  ;------------------------------------------------------------------
+  ; Program napisany z okazji Swiat Bozego Narodzenia A.D. 1993
+  ;
+  ; Skompilowac Turbo_Assemblerem f-my Borland.
+  ;
+  ; Autor programu: Jacek Porembiński
+  ;------------------------------------------------------------------
+
+       MODEL TINY
+       .CODE
+       ORG 100H
+
+  start:
+
+          mov    ax,cs             ; Ustaw poprawna wartosc rejestru DS
+          mov    ds,ax             ; (potrzebne tylko wtedy, gdy program
+                                   ;  ma byc w postaci .EXE).
+
+          mov    ax,07h            ; Ustaw tryb tekstowy - mono.
+          int    10h               ;
+                                   ; A teraz wyswietlimy obrazek na ekranie...
+          mov    ah,09h            ; DO AH numer funkcji wyswietlania tekstu.
+          mov    dx,offset PIC     ; Do DX adres poczatku bufora tekstu.
+          int    21h               ; Wywolanie przerwania uslugowego DOS-u
+
+  ;-------------------------------------
+  ; Rozpoczecie grania koledy
+  ; W DX wartosc licznika odpowiadajaca
+  ; czestotliwosci odpowiedniej nuty
+  ; do zagrania, w BX czas brzmienia.
+  ;-------------------------------------
+          mov    dx,0BE4h          ; G1
+          mov    bx,09h
+          call   PLAY
+          mov    dx,0A98h          ; A1
+          mov    bx,03h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0E24h          ; E1
+          mov    bx,12h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,09h
+          call   PLAY
+          mov    dx,0A98h          ; A1
+          mov    bx,03h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0E24h          ; E1
+          mov    bx,12h
+          call   PLAY
+
+  ;---------------------------------------
+
+          mov    dx,07F0h          ; D2
+          mov    bx,0Bh
+          call   PLAY
+          mov    dx,10h            ;
+          mov    bx,01h
+          call   PLAY
+          mov    dx,07F0h          ; D2
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0990h          ; H1
+          mov    bx,12h
+          call   PLAY
+          mov    dx,08E8h          ; C2
+          mov    bx,0Bh
+          call   PLAY
+          mov    dx,10h            ;
+          mov    bx,01h
+          call   PLAY
+          mov    dx,08E8h          ; C2
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,12h
+          call   PLAY
+
+  ;------------------------------------
+
+          mov    dx,0A98h          ; A1
+          mov    bx,0Bh
+          call   PLAY
+          mov    dx,10h            ;
+          mov    bx,01h
+          call   PLAY
+          mov    dx,0A98h          ; A1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,08E8h          ; C2
+          mov    bx,09h
+          call   PLAY
+          mov    dx,0990h          ; H1
+          mov    bx,03h
+          call   PLAY
+          mov    dx,0A98h          ; A1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,09h
+          call   PLAY
+          mov    dx,0A98h          ; A1
+          mov    bx,03h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0E24h          ; E1
+          mov    bx,0Bh
+          call   PLAY
+          mov    dx,10h            ;
+          mov    bx,01h
+          call   PLAY
+          mov    dx,0E24h          ; E1
+          mov    bx,06h
+          call   PLAY
+
+  ;------------------------------------
+
+          mov    dx,0A98h          ; A1
+          mov    bx,0Bh
+          call   PLAY
+          mov    dx,10h            ;
+          mov    bx,01h
+          call   PLAY
+          mov    dx,0A98h          ; A1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,08E8h          ; C2
+          mov    bx,09h
+          call   PLAY
+          mov    dx,0990h          ; H1
+          mov    bx,03h
+          call   PLAY
+          mov    dx,0A98h          ; A1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,09h
+          call   PLAY
+          mov    dx,0A98h          ; A1
+          mov    bx,03h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0E24h          ; E1
+          mov    bx,0Bh
+          call   PLAY
+          mov    dx,10h            ;
+          mov    bx,01h
+          call   PLAY
+          mov    dx,0E24h          ; E1
+          mov    bx,06h
+          call   PLAY
+
+  ;-------------------------------------
+
+          mov    dx,07F0h          ; D2
+          mov    bx,0Bh
+          call   PLAY
+          mov    dx,10h            ;
+          mov    bx,01h
+          call   PLAY
+          mov    dx,07F0h          ; D2
+          mov    bx,06h
+          call   PLAY
+          mov    dx,06ACh          ; F2
+          mov    bx,09h
+          call   PLAY
+          mov    dx,07F0h          ; D2
+          mov    bx,03h
+          call   PLAY
+          mov    dx,0990h          ; H1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,08E8h          ; C2
+          mov    bx,12h
+          call   PLAY
+          mov    dx,0712h          ; E2
+          mov    bx,12h
+          call   PLAY
+
+  ;-------------------------------------
+
+          mov    dx,08E8h          ; C2
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0E24h          ; E1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0BE4h          ; G1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0D59h          ; F1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,0FDFh          ; D1
+          mov    bx,06h
+          call   PLAY
+          mov    dx,11D1h          ; C1
+          mov    bx,24h
+          call   PLAY
+
+  ;-------------------------------------
+
+          mov    ah,4Ch            ; Powrot do DOS-u.
+          int    21h
+
+  ;-------------------------------------
+
+  impulsy dw     00h               ; Komorka pamieci do przechowywania
+                                   ; wartosci odliczonych impulsow
+                                   ; zegarowych (co ok. 55 milisek.).
+
+  ;---------------------------------------------------------------------------
+
+  PLAY PROC NEAR            ; Procedura grania nut
+
+          mov    al,0B6h    ; Informacja, ze bedzie ustawiana wartosc licznika.
+          out    43h,al     ; Wyslanie do portu.
+          mov    ax,dx      ; Wartosc licznika z DX do akumulatora.
+          out    42h,al     ; Wyslij do portu mniej znaczacy bajt licznika.
+          mov    al,ah
+          out    42h,al     ; i bardziej znaczacy bajt licznika.
+
+                            ; Zegar 8253 jest juz zaprogramowany na czestotliwosc
+                            ; odpowiadajaca danej wartosci licznika, czyli odp. nute.
+                            ; Teraz trzeba wlaczyc dzwiek.
+
+          in     al,61h     ; Pobranie stanu generatora.
+          or     al,3       ; Uruchomienie dzwieku - bity 0 i 1 = 1
+          out    61h,al     ; Wyslanie do portu.
+
+  ;--------------------------------------------------------------------
+  ; Odliczenie czasu (wartosc z rejestru BX razy 55 milisekund.)
+  ;--------------------------------------------------------------------
+          push   cx         ; Przechowaj CX i DX na stosie.
+          push   dx
+          mov    cx,bx      ; Dlugosc interwalu.
+
+  duza_petla:
+          push   cx         ; Przechowanie licznika duzej petli.
+          xor    ah,ah
+          int    1Ah        ; Pobranie liczby impulsow zegara:
+                            ; w CX:DX - liczba impulsow zegara.
+          mov    impulsy,dx ; Przechowanie mniej znaczacej czesci.
+
+  mala_petla:
+          xor    ah,ah
+          int    1Ah
+          cmp    impulsy,dx ; Czy liczba impulsow jest taka sama?
+          je     mala_petla
+
+                            ; Liczba impulsow zmienila sie...
+
+          pop    cx         ; Odtworzenie licznika duzej petli.
+          loop   duza_petla ; Petla naliczania impulsow zegara.
+          pop    dx         ; Odtworzenie rejestrow procesora
+          pop    cx
+
+  ;--------------------------
+  ; Wylaczenie generatora
+  ;--------------------------
+          in     al,61h     ; Pobranie stanu generatora.
+          and    al,0FCh    ; Kasowanie bitow dzwieku - bity 0 i 1 = 0
+          out    61h,al     ; Wyslanie do portu.
+          ret
+
+  PLAY ENDP
+
+  ;-----------------------------------------------------
+  ; Obrazek i napis do wyswietlenia na ekranie za pomoca
+  ; standardowej funkcji nr 09h przerwania nr 21h
+  ;-----------------------------------------------------
+
+  PIC db 38 dup (20h), 2Ah, 20 dup (20h), 0Fh, 0Ah, 0Dh
+      db 18 dup (20h), 0Fh, 19 dup (20h), 2Ah, 0Ah, 0Dh
+      db 36 dup (20h),"**�**", 29 dup (20h), 0Fh, 0Ah, 0Dh
+      db 33 dup (20h),"*****�*****", 0Ah, 0Dh
+      db 08 dup (20h), 0Fh, 27 dup (20h),"**�**", 0Ah, 0Dh
+      db 34 dup (20h), "****�****              ", 0Ah, 0Dh
+      db 20 dup (20h), 0Fh, 10 dup (20h),"*******�*******", 0Ah, 0Dh
+      db 27 dup (20h), "***********�***********", 0Ah, 0Dh
+      db 34 dup (20h), "****�****", 0Ah, 0Dh
+      db 31 dup (20h), "******���******", 0Ah, 0Dh
+      db 13 dup (20h), 0Fh, 14 dup (20h), "*********���*********", 0Ah, 0Dh
+      db 25 dup (20h), "************���************", 0Ah, 0Dh
+      db 21 dup (20h), 16 dup (2Ah), "���", 16 dup (2Ah), 15 dup (20h), 0Fh, 0Ah, 0Dh
+      db 17 dup (20h), 20 dup (2Ah), "���", 20 dup (2Ah), 0Ah, 0Dh
+      db 13 dup (20h), 24 dup (2Ah), "���", 24 dup (2Ah), 0Ah, 0Dh
+      db 37 dup (20h), "���", 0Ah, 0Dh
+      db "        *", 28 dup (20h), "���", 28 dup (20h), 2Ah, 0Ah, 0Dh
+      db "       *�*", 27 dup (20h), "���", 27 dup (20h), "*�*", 0Ah, 0Dh
+      db "      **�**", 55 dup (20h), "**�**", 0Ah, 0Dh
+      db "    ****�****         WESOLYCH SWIAT  BOZEGO NARODZENIA         ****�****", 0Ah, 0Dh
+      db "  ******�******        I SZCZESLIWEGO NOWEGO 1994 ROKU        ******�******", 0Ah, 0Dh
+      db "        �                    ZYCZY  JACEK SP7LSM                    �", 0Ah, 0Dh, 24h
+
+           end start
+
+
+</code>
+             </pre>
+             <hr />
+                <br />
+                <br />
+                <p>Poniżej widać zrzut ekranu z okna DOSBOX-a, w którym uruchomiłem program CICHANOC.COM.</p>
+                <p>Pliki CICHANOC.ASM i CICHANOC.COM można pobrać jako archiwum <a href="cichanoc.tgz"> cichanoc.tgz.</a></p>
+                <br />
+                <br />             
+                <p style="text-align: center">
+                    <img src="cichanoc.png" alt="DOSBOX - screenshot" />
+                </p>
+                <br />
+                <br />
+             <hr />
+                <br />
+                <br />
+                <p style="text-align: center">
+                    <a href="index.html">Strona główna</a>
+                </p>
+</section>
+
+
+
+<!-- footer -->
+
+<footer>
+
+<p>Jacek Porembiński © 2019</p>
+
+</footer>
+
+
+
+</div>
+
+
+
+</body>
+
+</html>
